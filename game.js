@@ -20,8 +20,8 @@ const c = canvas.getContext('2d');
 // canvas.width = innerWidth;
 // canvas.height = innerHeight;
 // Not sure if I want to use this technique or not
-// canvasWidth = canvas.width; 
-// canvasHeight = canvas.height;
+canvasWidth = canvas.width; 
+canvasHeight = canvas.height;
 var cameraPos = [0,0];
 var zoom = 30; 
 var maxSubSteps = 10;
@@ -104,11 +104,18 @@ function drawBody(body){
 
  /// Player
 
- /// Draw Circle 
 
 // Creating the plane
 
 // Render
+
+function render(){
+    c.fillStyle = "#3D998A";
+    c.fillRect(0, 0, canvasWidth, canvasHeight);
+    c.save();
+    c.translate(canvasWidth/2, canvasHeight/2);
+    c.scale(zoom, -zoom);
+}
 
 // Game Loop
 
