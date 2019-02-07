@@ -17,3 +17,4 @@ The magic and heavy lifting of the game comes from the HTML 5 2D lib and the P2.
 ### TODO
 
 1. Set up basic file structure && Boilerplate code.
+2. Create Level Map
