@@ -41,7 +41,11 @@ var PLAYER_GROUP = 0x02; // Collision Group variable may need to go into a const
  world = new p2.World();
 
  // Creating the plane
-
+ var planeShape = new p2.Plane();
+ var plane = new p2.Body({ position:[0, -1],});
+ plane.addShape(planeShape);
+ world.addBody(plane);
+ 
  // Static Objects for scenery
  // addStaticBox(x, y, angle, width, height)
 staticBuildingBlockForScenery(2, 3, 0, 2, 1);
@@ -89,7 +93,7 @@ function drawBody(body){
     c.rotate(body.interpolatedAngel);
 
     if (s instanceof p2.Box) {
-       c.fillRect(-s.width/2, -s.height, s.width,s.height;)
+       c.fillRect(-s.width/2, -s.height, s.width,s.height);
     }
     else if (s instanceof p2.Circle) {
         c.beginPath();
@@ -124,7 +128,7 @@ init();
 requestAnimationFrame(animate)
 
 // Implementation
-function() {
-    // the inners
-};
+// function() {
+//     // the inners
+// };
 
