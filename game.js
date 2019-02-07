@@ -44,11 +44,61 @@ var PLAYER_GROUP = 0x02; // Collision Group variable may need to go into a const
 
  // Static Objects for scenery
  // addStaticBox(x, y, angle, width, height)
- addStaticBox(2, 3, 0, 7, 1);
- addStaticBox(6, 6, 0, 3, 1);
- addStaticBox(10, 9, 0, 2, 1);
- addStaticBox(14, 12, 0, 7, 1);
- addStaticBox(18, 15, 0, 7, 3);
+staticBuildingBlockForScenery(2, 3, 0, 2, 1);
+staticBuildingBlockForScenery(6, 6, 0, 3, 1);
+staticBuildingBlockForScenery(10, 9, 0, 2, 1);
+staticBuildingBlockForScenery(14, 12, 0, 7, 1);
+staticBuildingBlockForScenery(18, 15, 0, 7, 3);
+
+// Creating Static Box Object
+function staticBuildingBlockForScenery(x, y, angle, width, height) {
+    var shape = new p2.Box({
+        collisionGroup: SCENERY_GROUP,
+        width: width,
+        height: height
+    });
+    var body = new p2.Body({
+        position:[x, y],
+        angle: angle
+    });
+    body.addShape(shape);
+    world.addBody(body);
+};
+
+// Creating Static Circle Object
+function staticBuildingCircleForScenery(x, y, angle, radius) {
+    var shape = new p2.Circle({
+        collisionGroup: SCENERY_GROUP,
+        radius: radius
+    });
+    var body = new p2.Body({
+        position:[x, y],
+        angle: angle
+    });
+    body.addShape(shape);
+    world.addBody(body);
+};
+
+// Drawing the Boxes and Circles
+function drawBody(body){
+    var x = body.interpolatedPosition[0],
+        y = body.interpolatedPosition[1],
+        s = body.shapes[0];
+    c.save();
+    c.translate(x, y);
+    c.rotate(body.interpolatedAngel);
+
+    if (s instanceof p2.Box) {
+       c.fillRect(-s.width/2, -s.height, s.width,s.height;)
+    }
+    else if (s instanceof p2.Circle) {
+        c.beginPath();
+        c.arc(0, 0, s.radius, 0, 2 * Math.PI);
+        c.fill();
+        c.closePath();
+    }
+     c.restore();
+};
 
  //Characters
 
