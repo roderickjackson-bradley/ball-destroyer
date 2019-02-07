@@ -25,7 +25,9 @@ canvasWidth = canvas.width;
 canvasHeight = canvas.height;
 var cameraPos = [0,0];
 var zoom = 30; 
+var fixedDeltaTime = 1 / 60;
 var maxSubSteps = 10;
+c.lineWidth = 1 / zoom;
 var canvasWidth;
 var canvasHeight;
 var world;
@@ -34,8 +36,9 @@ var player;
 var SCENERY_GROUP = 0x01; // Collosion Group variable may need to go into a constant variable
 var PLAYER_GROUP = 0x02; // Collision Group variable may need to go into a constant variable
 //var ENEMY_GROUP = 0x03;// I plan implementing this later with other shapes being the enemy
-init();
 requestAnimationFrame(animate);
+
+init();
 
 /* init function
  *
@@ -48,7 +51,7 @@ requestAnimationFrame(animate);
     var planeShape = new p2.Plane();
     var plane = new p2.Body({ position:[0, -1],});
     plane.addShape(planeShape);
-    world.addBody(plane)
+    world.addBody(plane);
 
       // Add a character body
       var characterShape = new p2.Circle({
@@ -115,6 +118,20 @@ staticBuildingBlockForScenery(18, 15, 0, 7, 3);
  *
  */
 
+ // Creating Static Circle Object
+function staticBuildingCircleForScenery(x, y, angle, radius) {
+    var shape = new p2.Circle({
+        collisionGroup: SCENERY_GROUP,
+        radius: radius
+    });
+    var body = new p2.Body({
+        position:[x, y],
+        angle: angle
+    });
+    body.addShape(shape);
+    world.addBody(body);
+};
+
 // Creating Static Box Object
 function staticBuildingBlockForScenery(x, y, angle, width, height) {
     var shape = new p2.Box({
@@ -130,19 +147,7 @@ function staticBuildingBlockForScenery(x, y, angle, width, height) {
     world.addBody(body);
 };
 
-// Creating Static Circle Object
-function staticBuildingCircleForScenery(x, y, angle, radius) {
-    var shape = new p2.Circle({
-        collisionGroup: SCENERY_GROUP,
-        radius: radius
-    });
-    var body = new p2.Body({
-        position:[x, y],
-        angle: angle
-    });
-    body.addShape(shape);
-    world.addBody(body);
-};
+
 
 // Drawing the Boxes and Circles
 function drawBody(body){
@@ -173,9 +178,28 @@ function render(){
     c.save();
     c.translate(canvasWidth/2, canvasHeight/2);
     c.scale(zoom, -zoom);
-}
 
-// Game Loop
+    p2.vec2.lerp(
+        cameraPos,
+        cameraPos,
+        [-characterBody.interpolatedPosition[0], -characterBody.interpolatedPosition[1]],
+        0.05
+      );
+      c.translate(
+        cameraPos[0],
+        cameraPos[1]
+      );
+
+      // Draw all bodies
+      c.strokeStyle='blue';
+      c.fillStyle='white';
+      for(var i=0; i<world.bodies.length; i++){
+        var body = world.bodies[i];
+        drawBody(body);
+      }
+
+      c.restore();
+}
 
 var lastTime;
 
