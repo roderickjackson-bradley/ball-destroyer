@@ -35,7 +35,7 @@ var characterBody;
 var player;
 var SCENERY_GROUP = 0x01; // Collosion Group variable may need to go into a constant variable
 var PLAYER_GROUP = 0x02; // Collision Group variable may need to go into a constant variable
-//var ENEMY_GROUP = 0x03;// I plan implementing this later with other shapes being the enemy
+var ENEMY_GROUP = 0x03;// I plan implementing this later with other shapes being the enemy
 requestAnimationFrame(animate);
 
 init();
@@ -113,6 +113,21 @@ staticBuildingBlockForScenery(6, 6, 0, 3, 1);
 staticBuildingBlockForScenery(10, 9, 0, 2, 1);
 staticBuildingBlockForScenery(14, 12, 0, 7, 1);
 staticBuildingBlockForScenery(18, 15, 0, 7, 3);
+staticBuildingBlockForScenery(-2, 0, 0, 2, 1);
+staticBuildingBlockForScenery(-6, 0, 1, 3, 1);
+staticBuildingBlockForScenery(-10, 0, -0.2, 2, 1);
+staticBuildingBlockForScenery(-14, 1, 0, 7, 1);
+staticBuildingBlockForScenery(-18, 15, 0, 7, 3);
+staticBuildingBlockForScenery(-22, 3, 0, 2, 1);
+staticBuildingBlockForScenery(-16, 1, 1, 3, 1);
+staticBuildingBlockForScenery(-20, 4, -1, 2, 1);
+staticBuildingBlockForScenery(-4, 2, 0.5, 7, 1);
+staticBuildingBlockForScenery(18, 15, -0.3, 7, 3);
+staticBuildingBlockForScenery(2, 3, 1, 2, 1);
+staticBuildingBlockForScenery(6, 6, 0, 3, 1);
+staticBuildingBlockForScenery(10, 9, 0, 2, 1);
+staticBuildingBlockForScenery(14, 12, 0, 7, 1);
+staticBuildingBlockForScenery(18, 15, 0, 7, 3);
 
 /* Objects
  *
@@ -148,6 +163,50 @@ function staticBuildingBlockForScenery(x, y, angle, width, height) {
 };
 
 
+     
+enemyBodyArr = [];
+// Adding Enemies
+function addEnemies(){
+  for(var i=0; i<12; i++){
+    var x = Math.random()-0.5 * 16,
+        y =  Math.random()-0.5 * 9,
+        dx =  Math.random()-0.5 * 2,
+        dy =  Math.random()-0.5 * 2,
+        va =  Math.random()-0.5 * 2;
+  }  
+    enemyBodyArr = [];
+    // Create enemy body
+    function createEnemyBody() {
+      
+      var enemyBody = new p2.Body({
+      mass:10,
+      position:[x,y],
+      velocity:[dx,dy],
+      angularVelocity : va,
+      damping: 0,
+      angularDamping: 0
+      });
+
+      enemyBody.addShape(createEnemyShape());
+      enemies.push(enemyBodyArr); //Add enemies Variable to draw function
+      addBodies.push(enemyBodyArr);
+      
+    };      
+
+  }
+    function createEnemyShape(){
+    var shape = new p2.Box({
+      width: width,
+      height: height,
+      collisionGroup: ENEMY_GROUP, // Belongs to the ENEMY_GROUP group
+      collisionMask: PLAYER_GROUP | SCENERY_GROUP // Can collide with the PLAYER_GROUP or SCENERY_GROUP group
+      
+    });
+    return shape;
+};
+
+
+
 
 // Drawing the Boxes and Circles
 function drawBody(body){
@@ -156,7 +215,7 @@ function drawBody(body){
         s = body.shapes[0];
     c.save();
     c.translate(x, y);
-    c.rotate(body.interpolatedAngel);
+    c.rotate(body.interpolatedAngle);
 
     if (s instanceof p2.Box) {
        c.fillRect(-s.width/2, -s.height, s.width,s.height);
