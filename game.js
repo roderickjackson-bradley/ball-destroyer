@@ -38,6 +38,10 @@ var PLAYER_GROUP = 0x02; // Collision Group variable may need to go into a const
 var ENEMY_GROUP = 0x03;// I plan implementing this later with other shapes being the enemy
 requestAnimationFrame(animate);
 
+// I would like to add more realistic physics to my ball where interia comes in to play
+// body.mass += 1;
+// body.updateMassProperties();
+
 init();
 
 /* init function
@@ -46,6 +50,13 @@ init();
  function init(){
 
     world = new p2.World();
+    
+    // function win() {
+    //     if (characterBody.position[6, 6] == staticBuildingBlockForScenery(6,6) ){
+    //         return 'You won';
+    //     }
+    // };
+
 
     // Creating the plane
     var planeShape = new p2.Plane();
@@ -60,20 +71,24 @@ init();
       });
       characterBody = new p2.Body({
         mass: 3,
-        position:[0,3],
+        position:[-10,3],
+        velocity:[0, 0],
+        angularVelocity: 2,
+
         fixedRotation: false,
         damping: 0,
         type: p2.Body.KINEMATIC
       });
       characterBody.addShape(characterShape);
       world.addBody(characterBody);
+      
 
       // Create the character controller
       player = new p2.KinematicCharacterController({
         world: world,
         body: characterBody,
         collisionMask: SCENERY_GROUP,
-        velocityXSmoothing: 0.1,
+        velocityXSmoothing: +0.1,
         timeToJumpApex: 0.7,
         skinWidth: 0.1
       });
@@ -108,30 +123,33 @@ init();
 
  // Static Objects for scenery
  // addStaticBox(x, y, angle, width, height)
-staticBuildingBlockForScenery(2, 3, 0, 2, 1);
-staticBuildingBlockForScenery(6, 6, 0, 3, 1);
-staticBuildingBlockForScenery(10, 9, 0, 2, 1);
-staticBuildingBlockForScenery(14, 12, 0, 7, 1);
-staticBuildingBlockForScenery(18, 15, 0, 7, 3);
-staticBuildingBlockForScenery(-2, 0, 0, 2, 1);
-staticBuildingBlockForScenery(-6, 0, 1, 3, 1);
-staticBuildingBlockForScenery(-10, 0, -0.2, 2, 1);
-staticBuildingBlockForScenery(-14, 1, 0, 7, 1);
-staticBuildingBlockForScenery(-18, 15, 0, 7, 3);
-staticBuildingBlockForScenery(-22, 3, 0, 2, 1);
-staticBuildingBlockForScenery(-16, 1, 1, 3, 1);
-staticBuildingBlockForScenery(-20, 4, -1, 2, 1);
-staticBuildingBlockForScenery(-4, 2, 0.5, 7, 1);
-staticBuildingBlockForScenery(18, 15, -0.3, 7, 3);
-staticBuildingBlockForScenery(2, 3, 1, 2, 1);
-staticBuildingBlockForScenery(6, 6, 0, 3, 1);
-staticBuildingBlockForScenery(10, 9, 0, 2, 1);
-staticBuildingBlockForScenery(14, 12, 0, 7, 1);
-staticBuildingBlockForScenery(18, 15, 0, 7, 3);
+ // I want to loop over this and randomize the layout everytime game restarts
+var boxScene = [staticBuildingBlockForScenery(2, 3, 0, 2, 1),
+staticBuildingBlockForScenery(6, 6, 0, 3, 1),
+staticBuildingBlockForScenery(10, 9, 0, 2, 1),
+staticBuildingBlockForScenery(14, 12, 0, 7, 1),
+staticBuildingBlockForScenery(18, 15, 0, 7, 3),
+staticBuildingBlockForScenery(-2, 0, 0, 2, 1),
+staticBuildingBlockForScenery(-6, 0, 1, 3, 1),
+staticBuildingBlockForScenery(-10, 0, -0.2, 2, 1),
+staticBuildingBlockForScenery(-14, 1, 0, 7, 1),
+staticBuildingBlockForScenery(-18, 15, 0, 7, 3),
+staticBuildingBlockForScenery(-22, 3, 0, 2, 1),
+staticBuildingBlockForScenery(-16, 1, 1, 3, 1),
+staticBuildingBlockForScenery(-20, 4, -1, 2, 1),
+staticBuildingBlockForScenery(-4, 2, 0.5, 7, 1),
+staticBuildingBlockForScenery(18, 15, -0.3, 7, 3),
+staticBuildingBlockForScenery(2, 3, 1, 2, 1),
+staticBuildingBlockForScenery(6, 6, 0, 3, 1),
+staticBuildingBlockForScenery(10, 9, 0, 2, 1),
+staticBuildingBlockForScenery(14, 12, 0, 7, 1),
+staticBuildingBlockForScenery(18, 15, 0, 7, 3)]
 
 /* Objects
  *
  */
+
+
 
  // Creating Static Circle Object
 function staticBuildingCircleForScenery(x, y, angle, radius) {
@@ -147,6 +165,7 @@ function staticBuildingCircleForScenery(x, y, angle, radius) {
     world.addBody(body);
 };
 
+
 // Creating Static Box Object
 function staticBuildingBlockForScenery(x, y, angle, width, height) {
     var shape = new p2.Box({
@@ -155,6 +174,8 @@ function staticBuildingBlockForScenery(x, y, angle, width, height) {
         height: height
     });
     var body = new p2.Body({
+    
+        //mass: (function(){}), I want to add a binary function that turns gravity on and off
         position:[x, y],
         angle: angle
     });
@@ -163,47 +184,6 @@ function staticBuildingBlockForScenery(x, y, angle, width, height) {
 };
 
 
-     
-enemyBodyArr = [];
-// Adding Enemies
-function addEnemies(){
-  for(var i=0; i<12; i++){
-    var x = Math.random()-0.5 * 16,
-        y =  Math.random()-0.5 * 9,
-        dx =  Math.random()-0.5 * 2,
-        dy =  Math.random()-0.5 * 2,
-        va =  Math.random()-0.5 * 2;
-  }  
-    enemyBodyArr = [];
-    // Create enemy body
-    function createEnemyBody() {
-      
-      var enemyBody = new p2.Body({
-      mass:10,
-      position:[x,y],
-      velocity:[dx,dy],
-      angularVelocity : va,
-      damping: 0,
-      angularDamping: 0
-      });
-
-      enemyBody.addShape(createEnemyShape());
-      enemies.push(enemyBodyArr); //Add enemies Variable to draw function
-      addBodies.push(enemyBodyArr);
-      
-    };      
-
-  }
-    function createEnemyShape(){
-    var shape = new p2.Box({
-      width: width,
-      height: height,
-      collisionGroup: ENEMY_GROUP, // Belongs to the ENEMY_GROUP group
-      collisionMask: PLAYER_GROUP | SCENERY_GROUP // Can collide with the PLAYER_GROUP or SCENERY_GROUP group
-      
-    });
-    return shape;
-};
 
 
 
@@ -215,7 +195,7 @@ function drawBody(body){
         s = body.shapes[0];
     c.save();
     c.translate(x, y);
-    c.rotate(body.interpolatedAngle);
+    c.rotate(body.interpolatedAngle);//Man this was a pain to debug
 
     if (s instanceof p2.Box) {
        c.fillRect(-s.width/2, -s.height, s.width,s.height);
@@ -280,5 +260,36 @@ function animate(time){
   lastTime = time;
 }
 
+
+//This is documentation in the framework that covers collision stuff
+  /**
+         * Collision group that this shape belongs to (bit mask). See <a href="http://www.aurelienribon.com/blog/2011/07/box2d-tutorial-collision-filtering/">this tutorial</a>.
+         * @property collisionGroup
+         * @type {Number}
+         * @example
+         *     // Setup bits for each available group
+         *     var PLAYER = Math.pow(2,0),
+         *         ENEMY =  Math.pow(2,1),
+         *         GROUND = Math.pow(2,2)
+         *
+         *     // Put shapes into their groups
+         *     player1Shape.collisionGroup = PLAYER;
+         *     player2Shape.collisionGroup = PLAYER;
+         *     enemyShape  .collisionGroup = ENEMY;
+         *     groundShape .collisionGroup = GROUND;
+         *
+         *     // Assign groups that each shape collide with.
+         *     // Note that the players can collide with ground and enemies, but not with other players.
+         *     player1Shape.collisionMask = ENEMY | GROUND;
+         *     player2Shape.collisionMask = ENEMY | GROUND;
+         *     enemyShape  .collisionMask = PLAYER | GROUND;
+         *     groundShape .collisionMask = PLAYER | ENEMY;
+         *
+         * @example
+         *     // How collision check is done
+         *     if(shapeA.collisionGroup & shapeB.collisionMask)!=0 && (shapeB.collisionGroup & shapeA.collisionMask)!=0){
+         *         // The shapes will collide
+         *     }
+         */
 
 
