@@ -24,7 +24,7 @@ const c = canvas.getContext('2d');
 canvasWidth = canvas.width; 
 canvasHeight = canvas.height;
 var cameraPos = [0,0];
-var zoom = 10; 
+var zoom = 20; 
 var fixedDeltaTime = 1 / 60;
 var maxSubSteps = 15;
 c.lineWidth = 1 / zoom;
@@ -66,7 +66,7 @@ init();
 
       // Add a character body
       var characterShape = new p2.Circle({
-        radius: 3,
+        radius: 1,
         collisionGroup: PLAYER_GROUP
       });
       characterBody = new p2.Body({
@@ -124,7 +124,7 @@ init();
  // Static Objects for scenery
  // addStaticBox(x, y, angle, width, height)
  // I want to loop over this and randomize the layout everytime game restarts
-
+  
 
 var circleScene = [
     staticBuildingCircleForScenery(1,2, 0, 3),
